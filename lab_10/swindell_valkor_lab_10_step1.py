@@ -28,12 +28,12 @@ def main():
     #---------------
     target = input('Enter the IP of the target SSH server: ')
     username = input('Enter the username to be used during the attempted SSH connections: ')
-    password_file = input('Enter the path of your password_file: ')
+    input_file = input('Enter the path of your password_file: ')
     #---------------
     # check if the file exists
     # if not, exit
     #-------------
-    if os.path.exists(password_file) == False:
+    if os.path.exists(input_file) == False:
         print('Password file not found.')
         sys.exit(1)
     #--------------
@@ -41,7 +41,7 @@ def main():
         # iterate over each line
         # strip the empty characters at the end, store in a password variable
         #------------
-        for line in file.readLines():
+        for line in file.readlines():
             password = line.strip()
         #--------------
             try:
