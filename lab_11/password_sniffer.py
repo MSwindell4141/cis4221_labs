@@ -20,7 +20,10 @@ def get_login_pass(body):
     
     ## Repeat the same block of code above for the password field
     ## -------------
-    ## Your code goes here
+    for password in passfields:
+        password_re = re.search('(%s=[^&]+)' % password, body, re.IGNORECASE)
+        if password_re:
+            passwd = password_re.group()
     ## -------------
     
     if user and passwd:
