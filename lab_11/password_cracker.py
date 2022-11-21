@@ -4,14 +4,16 @@ import hashlib
 ## prompt the user to input the hashed password to crack
 
 ## -----------
-## Your code goes here
+hash_type = input("hash type: ")
+password_file = input("password file: ")
+hashed_password = input("hashed password to crack: ")
 ## --------------
 
 ## with the password file open, read each line
     ## if the hash type is md5:
         ## create a variable storing hashlib.md5(line.strip().encode()).hexdigest()
         ## if it matches the hashed password the user entered, print("password found" + 
-line.strip())
+#line.strip())
         ## exit
   
     ## repeat the same with hash type sha1
