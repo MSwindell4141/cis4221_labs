@@ -2,14 +2,13 @@ from scapy.all import *
 from urllib import parse
 import re
 
-iface = sad # your computer's sniffing interface name
+iface = "Ethernet" # your computer's sniffing interface name
 
 def get_login_pass(body):
     user = None
     passwd = None
     
-    userfields = ['login', 'user', 'uname', 'username', 'nickname', 'userid', 'login_id', 
-    'sessionkey', 'session_key', 'uname']
+    userfields = ['login', 'user', 'uname', 'username', 'nickname', 'userid', 'login_id', 'sessionkey', 'session_key', 'uname']
     
     passfields = ['password', 'passphrase', 'pass', 'passwd']
     
@@ -31,9 +30,7 @@ def get_login_pass(body):
         ## -------------
         return (user, passwd)
         ## -------------
-
-      
-      
+    
 def pkt_parser(packet):
     try:
         ## if packet.haslayer is TCP and Raw and IP
@@ -51,7 +48,7 @@ def pkt_parser(packet):
             body = str(packet[TCP].payload)
             user_pass = get_login_pass(body)
             if user_pass != None:
-                print(packet[TDP].payload)
+                print(packet[TCP].payload)
                 print(parse.unquote(variable[0]))
                 print(parse.unquote(variable[1]))
             else:
@@ -71,5 +68,3 @@ def main():
         exit()
 if __name__ == "__main__":
     main()
-    
-    
