@@ -1,0 +1,13 @@
+Key.shift
+Key.shift
+Key.space
+Key.space
+Key.shift
+Key.space
+Key.shift
+'a'
+'s'
+'a'
+'s'
+'d'
+Key.space
