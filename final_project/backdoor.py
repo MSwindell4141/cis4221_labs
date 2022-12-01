@@ -9,9 +9,10 @@ import time
 print('Backdoor starting')
 ip = '127.0.0.1'
 port = 4141
-socket = socket.socket()
-try:
-    socket.connect((ip, port))
-    socket.send('This is a message from the backdoor')
-except:
-    print('nope')
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.connect((ip, port))
+    s.sendall(b"message from backdoor")
+    data = s.recv(1024)
+
+

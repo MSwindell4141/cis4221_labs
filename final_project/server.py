@@ -8,14 +8,19 @@ import time
 
 ip = '127.0.0.1'
 port = 4141
-socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-try:
-    socket.bind((ip, port))
-except:
-    print('Could not bind socket.')
 
-socket.listen(1)
-
-connection = socket.accept()
-message = socket.recv(4096)
-print(message)
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.bind((ip, port))
+    s.listen()
+    print("listening for connections...")
+    conn, addr = s.accept()
+    
+    with conn:
+        print(f"connected by {addr}")
+        while True:
+            data = conn.recv(1024)
+            if not data:
+                break
+            print(f"Received {data!r}")
+            conn.sendall(data)#can use this to send data back
+print("server closed")
