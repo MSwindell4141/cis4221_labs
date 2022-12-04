@@ -35,7 +35,3 @@ def target_communication():
         
 
 target_communication()
-
-#TODO (step 5) make the cd command work basically
-
-#TODO (step 6) "keylog command"
