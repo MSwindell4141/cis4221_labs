@@ -7,6 +7,7 @@ from ctypes.wintypes import INT
 ip = '127.0.0.1'
 port = 4141
 
+#create a socket, bind it to our selected ip and port.
 server = socket.socket()
 server.bind((ip, port))
 print('listening For target connection ...')

